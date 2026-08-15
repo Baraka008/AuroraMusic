@@ -32,8 +32,10 @@ import com.baraka.auroramusic.ui.library.LibraryScreen
 import com.baraka.auroramusic.ui.search.SearchScreen
 import com.baraka.auroramusic.ui.player.NowPlayingBar
 import com.baraka.auroramusic.ui.player.NowPlayingScreen
+import com.baraka.auroramusic.ui.player.PlayerViewModel
 import javax.inject.Inject
 import dagger.hilt.android.AndroidEntryPoint
+import androidx.hilt.navigation.compose.hiltViewModel
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -50,6 +52,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             AuroraMusicTheme {
                 val navController = rememberNavController()
+                val playerViewModel: PlayerViewModel = hiltViewModel()
                 val items = listOf(Screen.Library, Screen.Search, Screen.DJ)
                 var showPlayerCard by remember { mutableStateOf(false) }
 
@@ -87,7 +90,10 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.fillMaxSize(),
                         bottomBar = {
                             Column {
-                                NowPlayingBar(onOpenPlayer = { showPlayerCard = true })
+                                NowPlayingBar(
+                                    viewModel = playerViewModel,
+                                    onOpenPlayer = { showPlayerCard = true }
+                                )
                                 NavigationBar(
                                     containerColor = MaterialTheme.colorScheme.surface,
                                     contentColor = MaterialTheme.colorScheme.primary
@@ -120,9 +126,15 @@ class MainActivity : ComponentActivity() {
                             startDestination = Screen.Library.route,
                             modifier = Modifier.padding(innerPadding)
                         ) {
-                            composable(Screen.Library.route) { LibraryScreen() }
-                            composable(Screen.Search.route) { SearchScreen() }
-                            composable(Screen.DJ.route) { DJScreen(auroraDJ = auroraDJ) }
+                            composable(Screen.Library.route) { 
+                                LibraryScreen(playerViewModel = playerViewModel) 
+                            }
+                            composable(Screen.Search.route) { 
+                                SearchScreen(playerViewModel = playerViewModel) 
+                            }
+                            composable(Screen.DJ.route) { 
+                                DJScreen(auroraDJ = auroraDJ) 
+                            }
                         }
                     }
 
@@ -131,7 +143,10 @@ class MainActivity : ComponentActivity() {
                         enter = slideInVertically(initialOffsetY = { it }),
                         exit = slideOutVertically(targetOffsetY = { it })
                     ) {
-                        NowPlayingScreen(onBack = { showPlayerCard = false })
+                        NowPlayingScreen(
+                            viewModel = playerViewModel,
+                            onBack = { showPlayerCard = false }
+                        )
                     }
                 }
             }

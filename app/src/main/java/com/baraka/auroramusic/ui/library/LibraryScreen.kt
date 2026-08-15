@@ -17,8 +17,8 @@ import java.util.Locale
 
 @Composable
 fun LibraryScreen(
-    viewModel: LibraryViewModel = hiltViewModel(),
-    playerViewModel: PlayerViewModel = hiltViewModel()
+    playerViewModel: PlayerViewModel,
+    viewModel: LibraryViewModel = hiltViewModel()
 ) {
     val songs by viewModel.songs.collectAsState()
 

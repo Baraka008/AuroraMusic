@@ -15,7 +15,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.baraka.auroramusic.R
 import com.baraka.auroramusic.ui.library.formatDuration
 import com.baraka.auroramusic.ui.theme.AmoledBlack
@@ -24,13 +23,15 @@ import com.baraka.auroramusic.ui.theme.DarkSurface
 
 @Composable
 fun NowPlayingScreen(
-    viewModel: PlayerViewModel = hiltViewModel(),
+    viewModel: PlayerViewModel,
     onBack: () -> Unit
 ) {
     val currentSong by viewModel.currentSong.collectAsState()
     val isPlaying by viewModel.isPlaying.collectAsState()
     val shuffleEnabled by viewModel.shuffleEnabled.collectAsState()
     val repeatMode by viewModel.repeatMode.collectAsState()
+    val position by viewModel.currentPosition.collectAsState()
+    val duration by viewModel.duration.collectAsState()
 
     if (currentSong == null) return
 
@@ -103,20 +104,23 @@ fun NowPlayingScreen(
                     Text(
                         text = currentSong!!.title,
                         style = MaterialTheme.typography.displayLarge,
-                        color = Color.White
+                        color = Color.White,
+                        maxLines = 1
                     )
                     Text(
                         text = currentSong!!.artist,
                         style = MaterialTheme.typography.headlineSmall,
-                        color = Color.White.copy(alpha = 0.6f)
+                        color = Color.White.copy(alpha = 0.6f),
+                        maxLines = 1
                     )
                 }
 
                 Spacer(modifier = Modifier.height(48.dp))
 
+                val sliderValue = if (duration > 0) position.toFloat() / duration.toFloat() else 0f
                 Slider(
-                    value = 0.3f,
-                    onValueChange = {},
+                    value = sliderValue,
+                    onValueChange = { /* Implement seek if needed */ },
                     colors = SliderDefaults.colors(
                         thumbColor = Color.White,
                         activeTrackColor = Color.White,
@@ -125,8 +129,8 @@ fun NowPlayingScreen(
                 )
                 
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                    Text(text = "0:45", style = MaterialTheme.typography.labelSmall, color = Color.White.copy(alpha = 0.5f))
-                    Text(text = formatDuration(currentSong!!.duration), style = MaterialTheme.typography.labelSmall, color = Color.White.copy(alpha = 0.5f))
+                    Text(text = formatDuration(position), style = MaterialTheme.typography.labelSmall, color = Color.White.copy(alpha = 0.5f))
+                    Text(text = formatDuration(duration), style = MaterialTheme.typography.labelSmall, color = Color.White.copy(alpha = 0.5f))
                 }
 
                 Spacer(modifier = Modifier.weight(1f))

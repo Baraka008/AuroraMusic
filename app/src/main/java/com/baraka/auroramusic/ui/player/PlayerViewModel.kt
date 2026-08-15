@@ -1,11 +1,14 @@
 package com.baraka.auroramusic.ui.player
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.baraka.auroramusic.audio.controller.PlaybackController
 import com.baraka.auroramusic.data.entities.Song
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -13,11 +16,10 @@ class PlayerViewModel @Inject constructor(
     private val playbackController: PlaybackController
 ) : ViewModel() {
 
-    private val _currentSong = MutableStateFlow<Song?>(null)
-    val currentSong: StateFlow<Song?> = _currentSong
-
-    private val _isPlaying = MutableStateFlow(false)
-    val isPlaying: StateFlow<Boolean> = _isPlaying
+    val currentSong: StateFlow<Song?> = playbackController.currentSong
+    val isPlaying: StateFlow<Boolean> = playbackController.isPlaying
+    val currentPosition: StateFlow<Long> = playbackController.currentPosition
+    val duration: StateFlow<Long> = playbackController.duration
 
     private val _shuffleEnabled = MutableStateFlow(false)
     val shuffleEnabled: StateFlow<Boolean> = _shuffleEnabled
@@ -26,18 +28,14 @@ class PlayerViewModel @Inject constructor(
     val repeatMode: StateFlow<Int> = _repeatMode
 
     fun play(song: Song) {
-        _currentSong.value = song
-        _isPlaying.value = true
         playbackController.play(song)
     }
 
     fun togglePlayback() {
-        if (_isPlaying.value) {
+        if (isPlaying.value) {
             playbackController.pause()
-            _isPlaying.value = false
         } else {
             playbackController.resume()
-            _isPlaying.value = true
         }
     }
 

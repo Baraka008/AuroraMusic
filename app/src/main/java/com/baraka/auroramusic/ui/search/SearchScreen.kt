@@ -14,8 +14,8 @@ import com.baraka.auroramusic.ui.player.PlayerViewModel
 
 @Composable
 fun SearchScreen(
-    viewModel: LibraryViewModel = hiltViewModel(),
-    playerViewModel: PlayerViewModel = hiltViewModel()
+    playerViewModel: PlayerViewModel,
+    viewModel: LibraryViewModel = hiltViewModel()
 ) {
     var query by remember { mutableStateOf("") }
     val songs by viewModel.songs.collectAsState()
