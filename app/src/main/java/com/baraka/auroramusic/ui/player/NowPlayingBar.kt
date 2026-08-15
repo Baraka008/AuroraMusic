@@ -1,0 +1,53 @@
+package com.baraka.auroramusic.ui.player
+
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.baraka.auroramusic.R
+
+@Composable
+fun NowPlayingBar(
+    viewModel: PlayerViewModel = hiltViewModel(),
+    onOpenPlayer: () -> Unit
+) {
+    val currentSong by viewModel.currentSong.collectAsState()
+    val isPlaying by viewModel.isPlaying.collectAsState()
+
+    if (currentSong != null) {
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(64.dp)
+                .clickable { onOpenPlayer() },
+            color = MaterialTheme.colorScheme.surfaceVariant,
+            tonalElevation = 8.dp
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(text = currentSong!!.title, style = MaterialTheme.typography.titleMedium)
+                    Text(text = currentSong!!.artist, style = MaterialTheme.typography.bodySmall)
+                }
+                
+                IconButton(onClick = { viewModel.togglePlayback() }) {
+                    Icon(
+                        painter = painterResource(id = if (isPlaying) android.R.drawable.ic_media_pause else android.R.drawable.ic_media_play),
+                        contentDescription = null
+                    )
+                }
+            }
+        }
+    }
+}
