@@ -32,14 +32,13 @@ oboe::DataCallbackResult AudioEngine::onAudioReady(oboe::AudioStream *audioStrea
 }
 
 AudioEngine::AudioFeatures AudioEngine::analyzeFeature(const char* uri) {
-    // In a real implementation, we would decode the audio file at 'uri'
-    // and perform RMS, FFT, and beat tracking.
-    // Here we simulate the analysis for the architectural flow.
+    // Simulated realistic metrics based on file path hashing to be consistent per song
+    size_t hash = std::hash<std::string>{}(uri);
 
     AudioFeatures features;
-    features.energy = 0.75f;   // Simulated value
-    features.tempo = 124.0f;   // Simulated BPM
-    features.intensity = 0.6f; // Simulated value
+    features.energy = 0.4f + (hash % 60) / 100.0f;   // 0.4 to 1.0
+    features.tempo = 70.0f + (hash % 90);           // 70 to 160 BPM
+    features.intensity = 0.3f + (hash % 50) / 100.0f; // 0.3 to 0.8
 
     return features;
 }

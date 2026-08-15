@@ -3,6 +3,7 @@ package com.baraka.auroramusic.audio.controller
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
+import com.baraka.auroramusic.data.dao.MusicFeaturesDao
 import com.baraka.auroramusic.data.dao.SongDao
 import com.baraka.auroramusic.data.dao.ListeningEventDao
 import com.baraka.auroramusic.data.entities.EventType
@@ -19,7 +20,8 @@ import javax.inject.Singleton
 class PlaybackControllerImpl @Inject constructor(
     private val player: ExoPlayer,
     private val eventDao: ListeningEventDao,
-    private val songDao: SongDao
+    private val songDao: SongDao,
+    private val featuresDao: MusicFeaturesDao
 ) : PlaybackController {
     
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
@@ -36,6 +38,12 @@ class PlaybackControllerImpl @Inject constructor(
     private val _duration = MutableStateFlow(0L)
     override val duration: StateFlow<Long> = _duration.asStateFlow()
 
+    private val _currentBpm = MutableStateFlow(0f)
+    override val currentBpm: StateFlow<Float> = _currentBpm.asStateFlow()
+
+    private val _currentEnergy = MutableStateFlow(0f)
+    override val currentEnergy: StateFlow<Float> = _currentEnergy.asStateFlow()
+
     init {
         player.addListener(object : Player.Listener {
             override fun onIsPlayingChanged(isPlaying: Boolean) {
@@ -49,6 +57,12 @@ class PlaybackControllerImpl @Inject constructor(
                         val song = songDao.getSongById(songId)
                         _currentSong.value = song
                         _duration.value = player.duration.coerceAtLeast(0L)
+                        
+                        // Fetch features
+                        val features = featuresDao.getFeaturesForSong(songId)
+                        _currentBpm.value = features?.tempo ?: 0f
+                        _currentEnergy.value = features?.energy ?: 0f
+
                         if (song != null) {
                             recordEvent(song.id, EventType.PLAY_STARTED)
                         }
@@ -56,6 +70,8 @@ class PlaybackControllerImpl @Inject constructor(
                 } else {
                     _currentSong.value = null
                     _duration.value = 0L
+                    _currentBpm.value = 0f
+                    _currentEnergy.value = 0f
                 }
             }
 

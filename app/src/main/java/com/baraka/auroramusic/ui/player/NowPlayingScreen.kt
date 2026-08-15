@@ -20,6 +20,8 @@ import com.baraka.auroramusic.ui.library.formatDuration
 import com.baraka.auroramusic.ui.theme.AmoledBlack
 import com.baraka.auroramusic.ui.theme.AccentBlue
 import com.baraka.auroramusic.ui.theme.DarkSurface
+import androidx.compose.ui.layout.ContentScale
+import coil.compose.AsyncImage
 
 @Composable
 fun NowPlayingScreen(
@@ -32,6 +34,8 @@ fun NowPlayingScreen(
     val repeatMode by viewModel.repeatMode.collectAsState()
     val position by viewModel.currentPosition.collectAsState()
     val duration by viewModel.duration.collectAsState()
+    val bpm by viewModel.currentBpm.collectAsState()
+    val energy by viewModel.currentEnergy.collectAsState()
 
     if (currentSong == null) return
 
@@ -67,11 +71,20 @@ fun NowPlayingScreen(
                     IconButton(onClick = onBack) {
                         Icon(imageVector = Icons.Default.KeyboardArrowDown, contentDescription = null, tint = Color.White)
                     }
-                    Text(
-                        text = "NOW PLAYING",
-                        style = MaterialTheme.typography.labelLarge,
-                        color = Color.White.copy(alpha = 0.7f)
-                    )
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            text = "NOW PLAYING",
+                            style = MaterialTheme.typography.labelLarge,
+                            color = Color.White.copy(alpha = 0.7f)
+                        )
+                        if (bpm > 0) {
+                            Text(
+                                text = "${bpm.toInt()} BPM • ${(energy * 100).toInt()}% ENERGY",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = AccentBlue
+                            )
+                        }
+                    }
                     IconButton(onClick = { /* More options */ }) {
                         Icon(imageVector = Icons.Default.MoreVert, contentDescription = null, tint = Color.White)
                     }
@@ -79,7 +92,7 @@ fun NowPlayingScreen(
 
                 Spacer(modifier = Modifier.height(32.dp))
 
-                // Album Art Placeholder
+                // Album Art
                 Surface(
                     modifier = Modifier
                         .aspectRatio(1f)
@@ -88,14 +101,13 @@ fun NowPlayingScreen(
                     color = DarkSurface,
                     shadowElevation = 16.dp
                 ) {
-                    Box(contentAlignment = Alignment.Center) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_aurora_note),
-                            contentDescription = null,
-                            modifier = Modifier.size(140.dp),
-                            tint = Color.White.copy(alpha = 0.1f)
-                        )
-                    }
+                    AsyncImage(
+                        model = currentSong!!.albumArtUri,
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop,
+                        error = painterResource(id = R.drawable.ic_aurora_note)
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(48.dp))

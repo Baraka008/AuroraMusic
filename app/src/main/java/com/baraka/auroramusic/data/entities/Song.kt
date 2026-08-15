@@ -3,7 +3,12 @@ package com.baraka.auroramusic.data.entities
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "songs")
+import androidx.room.Index
+
+@Entity(
+    tableName = "songs",
+    indices = [Index(value = ["uri"], unique = true)]
+)
 data class Song(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val title: String,
@@ -13,6 +18,7 @@ data class Song(
     val year: Int?,
     val duration: Long,
     val uri: String,
+    val albumArtUri: String? = null,
     val playCount: Int = 0,
     val skipCount: Int = 0,
     val isFavorite: Boolean = false,

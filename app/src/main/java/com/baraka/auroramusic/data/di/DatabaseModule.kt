@@ -25,7 +25,8 @@ object DatabaseModule {
             context,
             AuroraDatabase::class.java,
             "aurora_music.db"
-        ).build()
+        ).fallbackToDestructiveMigration()
+            .build()
     }
 
     @Provides

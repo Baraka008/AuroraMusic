@@ -9,6 +9,8 @@ interface PlaybackController {
     val isPlaying: StateFlow<Boolean>
     val currentPosition: StateFlow<Long>
     val duration: StateFlow<Long>
+    val currentBpm: StateFlow<Float>
+    val currentEnergy: StateFlow<Float>
     
     fun play(song: Song)
     fun pause()

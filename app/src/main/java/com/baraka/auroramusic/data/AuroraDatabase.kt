@@ -18,7 +18,7 @@ import com.baraka.auroramusic.data.entities.Song
         ListeningEvent::class,
         DJSettings::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class AuroraDatabase : RoomDatabase() {

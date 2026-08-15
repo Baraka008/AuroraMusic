@@ -1,9 +1,12 @@
 package com.baraka.auroramusic.data
 
 import android.content.ContentResolver
+import android.content.ContentUris
+import android.net.Uri
 import android.provider.MediaStore
 import com.baraka.auroramusic.data.dao.SongDao
 import com.baraka.auroramusic.data.entities.Song
+import com.baraka.auroramusic.dj.MusicFeatureAnalyzer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -11,7 +14,8 @@ import javax.inject.Singleton
 
 @Singleton
 class MusicScanner @Inject constructor(
-    private val songDao: SongDao
+    private val songDao: SongDao,
+    private val featureAnalyzer: MusicFeatureAnalyzer
 ) {
     suspend fun scanLocalLibrary(contentResolver: ContentResolver) = withContext(Dispatchers.IO) {
         val uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
@@ -23,7 +27,7 @@ class MusicScanner @Inject constructor(
             MediaStore.Audio.Media.DURATION,
             MediaStore.Audio.Media.DATA,
             MediaStore.Audio.Media.YEAR,
-            MediaStore.Audio.Media.GENRE
+            MediaStore.Audio.Media.ALBUM_ID
         )
 
         contentResolver.query(uri, projection, null, null, null)?.use { cursor ->
@@ -33,18 +37,32 @@ class MusicScanner @Inject constructor(
             val durationIdx = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION)
             val dataIdx = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA)
             val yearIdx = cursor.getColumnIndex(MediaStore.Audio.Media.YEAR)
+            val albumIdIdx = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID)
 
             while (cursor.moveToNext()) {
+                val songUri = cursor.getString(dataIdx)
+                
+                // Check if song already exists
+                if (songDao.getSongByUri(songUri) != null) continue
+
+                val albumId = cursor.getLong(albumIdIdx)
+                val artUri = ContentUris.withAppendedId(
+                    Uri.parse("content://media/external/audio/albumart"),
+                    albumId
+                ).toString()
+
                 val song = Song(
                     title = cursor.getString(titleIdx),
                     artist = cursor.getString(artistIdx),
                     album = cursor.getString(albumIdx),
                     duration = cursor.getLong(durationIdx),
-                    uri = cursor.getString(dataIdx),
+                    uri = songUri,
+                    albumArtUri = artUri,
                     year = if (yearIdx != -1) cursor.getInt(yearIdx) else null,
-                    genre = "Unknown" // Genre is harder to get via MediaStore projection on some versions
+                    genre = "Unknown"
                 )
-                songDao.insertSong(song)
+                val id = songDao.insertSong(song)
+                featureAnalyzer.analyzeSong(song.copy(id = id))
             }
         }
     }

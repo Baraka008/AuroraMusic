@@ -20,6 +20,8 @@ class PlayerViewModel @Inject constructor(
     val isPlaying: StateFlow<Boolean> = playbackController.isPlaying
     val currentPosition: StateFlow<Long> = playbackController.currentPosition
     val duration: StateFlow<Long> = playbackController.duration
+    val currentBpm: StateFlow<Float> = playbackController.currentBpm
+    val currentEnergy: StateFlow<Float> = playbackController.currentEnergy
 
     private val _shuffleEnabled = MutableStateFlow(false)
     val shuffleEnabled: StateFlow<Boolean> = _shuffleEnabled
