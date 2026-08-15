@@ -4,6 +4,8 @@ import android.content.ContentResolver
 import android.provider.MediaStore
 import com.baraka.auroramusic.data.dao.SongDao
 import com.baraka.auroramusic.data.entities.Song
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -11,7 +13,7 @@ import javax.inject.Singleton
 class MusicScanner @Inject constructor(
     private val songDao: SongDao
 ) {
-    suspend fun scanLocalLibrary(contentResolver: ContentResolver) {
+    suspend fun scanLocalLibrary(contentResolver: ContentResolver) = withContext(Dispatchers.IO) {
         val uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
         val projection = arrayOf(
             MediaStore.Audio.Media._ID,

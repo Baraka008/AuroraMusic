@@ -1,9 +1,13 @@
 package com.baraka.auroramusic
 
+import android.Manifest
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
@@ -19,6 +23,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import kotlinx.coroutines.launch
 import com.baraka.auroramusic.ui.DJScreen
 import com.baraka.auroramusic.ui.Screen
 import com.baraka.auroramusic.ui.theme.AuroraMusicTheme
@@ -36,6 +41,9 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var auroraDJ: AuroraDJ
 
+    @Inject
+    lateinit var musicScanner: com.baraka.auroramusic.data.MusicScanner
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -44,6 +52,35 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 val items = listOf(Screen.Library, Screen.Search, Screen.DJ)
                 var showPlayerCard by remember { mutableStateOf(false) }
+
+                val permissionsToRequest = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    arrayOf(Manifest.permission.READ_MEDIA_AUDIO)
+                } else {
+                    arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+                }
+
+                val scope = rememberCoroutineScope()
+                val permissionLauncher = rememberLauncherForActivityResult(
+                    ActivityResultContracts.RequestMultiplePermissions()
+                ) { permissions ->
+                    val granted = permissions.values.all { it }
+                    if (granted) {
+                        scope.launch {
+                            musicScanner.scanLocalLibrary(contentResolver)
+                        }
+                    }
+                }
+
+                LaunchedEffect(Unit) {
+                    val allGranted = permissionsToRequest.all {
+                        checkSelfPermission(it) == android.content.pm.PackageManager.PERMISSION_GRANTED
+                    }
+                    if (allGranted) {
+                        musicScanner.scanLocalLibrary(contentResolver)
+                    } else {
+                        permissionLauncher.launch(permissionsToRequest)
+                    }
+                }
                 
                 Box(modifier = Modifier.fillMaxSize()) {
                     Scaffold(
