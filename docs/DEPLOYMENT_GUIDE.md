@@ -6,8 +6,8 @@ To make your 3D website "work" online and allow users to download your app, you 
 If you haven't pushed the latest changes yet, run these commands in your Android Studio terminal:
 ```bash
 git add .
-git commit -m "Fix website animations and update contact info"
-git push -u origin master
+git commit -m "Switch to main branch and update links"
+git push -u origin main
 ```
 
 ## 2. Enable the Website (GitHub Pages)
@@ -15,7 +15,7 @@ git push -u origin master
 2. Click on **Settings** (top navigation bar).
 3. Click on **Pages** in the left-hand sidebar.
 4. Under **Build and deployment** > **Branch**:
-   - Select `master`.
+   - Select `main`.
    - Select `/docs` folder.
 5. Click **Save**.
 *Your website will be live at `https://Baraka008.github.io/AuroraMusic` within 2-3 minutes.*
