@@ -40,7 +40,7 @@ Aurora Music is a high-performance, professional-grade music player for Android.
 
 ## 📥 Download & Live Demo
 Visit our landing page to download the latest APK:
-👉 [Aurora Music Landing Page](https://victorbaraka.github.io/AuroraMusic)
+👉 [Aurora Music Landing Page](https://Baraka008.github.io/AuroraMusic)
 
 ## 🏗 Build Instructions
 1. Clone the repository.

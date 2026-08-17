@@ -11,14 +11,14 @@ git push -u origin master
 ```
 
 ## 2. Enable the Website (GitHub Pages)
-1. Go to your repository at `https://github.com/victorbaraka/AuroraMusic`.
+1. Go to your repository at `https://github.com/Baraka008/AuroraMusic`.
 2. Click on **Settings** (top navigation bar).
 3. Click on **Pages** in the left-hand sidebar.
 4. Under **Build and deployment** > **Branch**:
    - Select `master`.
    - Select `/docs` folder.
 5. Click **Save**.
-*Your website will be live at `https://victorbaraka.github.io/AuroraMusic` within 2-3 minutes.*
+*Your website will be live at `https://Baraka008.github.io/AuroraMusic` within 2-3 minutes.*
 
 ## 3. How to provide the Download (APK)
 The website's download button currently links to your GitHub **Releases** page. You need to upload your app there:
