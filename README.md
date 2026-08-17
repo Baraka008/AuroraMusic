@@ -48,5 +48,11 @@ Visit our landing page to download the latest APK:
 3. Ensure NDK (Side by side) is installed.
 4. Sync Gradle and run the `:app` module.
 
+## 🤝 Contributing
+Contributions are welcome! Whether you want to fix a bug, add a new DSP node, or improve the UI, feel free to fork the repo and submit a Pull Request.
+
+## 📄 License
+This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
+
 ---
 Created with ❤️ by Victor Baraka.
