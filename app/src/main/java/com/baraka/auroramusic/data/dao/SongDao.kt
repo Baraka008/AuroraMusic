@@ -9,6 +9,9 @@ interface SongDao {
     @Query("SELECT * FROM songs")
     fun getAllSongs(): Flow<List<Song>>
 
+    @Query("SELECT uri FROM songs")
+    suspend fun getAllUris(): List<String>
+
     @Query("SELECT * FROM songs WHERE id = :id")
     suspend fun getSongById(id: Long): Song?
 
@@ -18,7 +21,7 @@ interface SongDao {
     @Query("SELECT * FROM songs WHERE artist = :artist")
     suspend fun getSongsByArtist(artist: String): List<Song>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertSong(song: Song): Long
 
     @Update
@@ -44,6 +47,30 @@ interface SongDao {
 
     @Query("SELECT * FROM songs WHERE playCount = 0 AND djExcluded = 0")
     suspend fun getUnheardSongs(): List<Song>
+
+    @Query("SELECT DISTINCT artist FROM songs WHERE djExcluded = 0 ORDER BY artist ASC")
+    fun getDistinctArtists(): Flow<List<String>>
+
+    @Query("SELECT DISTINCT album FROM songs WHERE djExcluded = 0 ORDER BY album ASC")
+    fun getDistinctAlbums(): Flow<List<String>>
+
+    @Query("SELECT DISTINCT genre FROM songs WHERE djExcluded = 0 ORDER BY genre ASC")
+    fun getDistinctGenres(): Flow<List<String>>
+
+    @Query("SELECT * FROM songs WHERE artist = :artist ORDER BY title ASC")
+    fun getSongsByArtistFlow(artist: String): Flow<List<Song>>
+
+    @Query("SELECT * FROM songs WHERE album = :album ORDER BY title ASC")
+    fun getSongsByAlbumFlow(album: String): Flow<List<Song>>
+
+    @Query("SELECT * FROM songs WHERE genre = :genre ORDER BY title ASC")
+    fun getSongsByGenreFlow(genre: String): Flow<List<Song>>
+
+    @Query("SELECT DISTINCT folderPath FROM songs WHERE djExcluded = 0 ORDER BY folderPath ASC")
+    fun getDistinctFolders(): Flow<List<String>>
+
+    @Query("SELECT * FROM songs WHERE folderPath = :folderPath ORDER BY title ASC")
+    fun getSongsInFolder(folderPath: String): Flow<List<Song>>
 
     @Query("""
         SELECT s.* FROM songs s 

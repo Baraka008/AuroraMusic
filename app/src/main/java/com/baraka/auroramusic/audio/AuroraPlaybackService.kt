@@ -1,5 +1,4 @@
-package com.baraka.auroramusic.audio
-
+import android.content.Intent
 import com.baraka.auroramusic.audio.controller.PlaybackController
 import com.baraka.auroramusic.audio.controller.PlaybackControllerImpl
 import androidx.media3.exoplayer.ExoPlayer
@@ -16,15 +15,21 @@ class AuroraPlaybackService : MediaSessionService() {
     @Inject
     lateinit var player: ExoPlayer
 
-    @Inject
-    lateinit var playbackController: PlaybackController
-
     override fun onCreate() {
         super.onCreate()
         mediaSession = MediaSession.Builder(this, player).build()
     }
 
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession? = mediaSession
+
+    override fun onTaskRemoved(rootIntent: Intent?) {
+        val player = mediaSession?.player
+        if (player != null) {
+            if (!player.playWhenReady || player.mediaItemCount == 0 || player.playbackState == androidx.media3.common.Player.STATE_ENDED) {
+                stopSelf()
+            }
+        }
+    }
 
     override fun onDestroy() {
         mediaSession?.run {

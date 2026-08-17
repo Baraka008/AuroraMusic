@@ -9,6 +9,10 @@ find_package(oboe REQUIRED CONFIG)
 add_library(aurora-audio SHARED
     jni/NativeAudioBridge.cpp
     engine/AudioEngine.cpp
+    dsp/DSPEngine.cpp
+    dsp/EQEngine.cpp
+    dsp/Limiter.cpp
+    analysis/SpectralAnalyzer.cpp
 )
 
 # Include directories
@@ -16,6 +20,8 @@ target_include_directories(aurora-audio PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/engine
     ${CMAKE_CURRENT_SOURCE_DIR}/jni
+    ${CMAKE_CURRENT_SOURCE_DIR}/dsp
+    ${CMAKE_CURRENT_SOURCE_DIR}/analysis
 )
 
 # Link libraries

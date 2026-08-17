@@ -30,12 +30,17 @@ import com.baraka.auroramusic.ui.theme.AuroraMusicTheme
 import com.baraka.auroramusic.dj.AuroraDJ
 import com.baraka.auroramusic.ui.library.LibraryScreen
 import com.baraka.auroramusic.ui.search.SearchScreen
+import com.baraka.auroramusic.ui.settings.SettingsScreen
+import com.baraka.auroramusic.ui.settings.SettingsViewModel
 import com.baraka.auroramusic.ui.player.NowPlayingBar
 import com.baraka.auroramusic.ui.player.NowPlayingScreen
 import com.baraka.auroramusic.ui.player.PlayerViewModel
+import com.baraka.auroramusic.audio.NativeAudioEngine
 import javax.inject.Inject
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -46,11 +51,17 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var musicScanner: com.baraka.auroramusic.data.MusicScanner
 
+    @Inject
+    lateinit var nativeEngine: NativeAudioEngine
+
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        nativeEngine.initialize()
         enableEdgeToEdge()
         setContent {
             AuroraMusicTheme {
+                val windowSizeClass = calculateWindowSizeClass(this)
                 val navController = rememberNavController()
                 val playerViewModel: PlayerViewModel = hiltViewModel()
                 val items = listOf(Screen.Library, Screen.Search, Screen.DJ)
@@ -127,13 +138,23 @@ class MainActivity : ComponentActivity() {
                             modifier = Modifier.padding(innerPadding)
                         ) {
                             composable(Screen.Library.route) { 
-                                LibraryScreen(playerViewModel = playerViewModel) 
+                                LibraryScreen(
+                                    playerViewModel = playerViewModel,
+                                    onNavigateToSettings = { navController.navigate(Screen.Settings.route) }
+                                ) 
                             }
                             composable(Screen.Search.route) { 
                                 SearchScreen(playerViewModel = playerViewModel) 
                             }
                             composable(Screen.DJ.route) { 
                                 DJScreen(auroraDJ = auroraDJ) 
+                            }
+                            composable(Screen.Settings.route) {
+                                val settingsViewModel: SettingsViewModel = hiltViewModel()
+                                SettingsScreen(
+                                    viewModel = settingsViewModel,
+                                    onBack = { navController.popBackStack() }
+                                )
                             }
                         }
                     }
@@ -145,6 +166,8 @@ class MainActivity : ComponentActivity() {
                     ) {
                         NowPlayingScreen(
                             viewModel = playerViewModel,
+                            nativeEngine = nativeEngine,
+                            windowSizeClass = windowSizeClass,
                             onBack = { showPlayerCard = false }
                         )
                     }

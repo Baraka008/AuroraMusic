@@ -13,9 +13,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.graphics.Color
 
 private val DarkColorScheme = darkColorScheme(
-    primary = AccentBlue,
-    secondary = PurpleGrey80,
-    tertiary = Pink80,
+    primary = SlateBlue,
+    secondary = SoftSlate,
+    tertiary = MutedTeal,
     background = AmoledBlack,
     surface = AmoledBlack,
     onPrimary = Color.White,
@@ -23,7 +23,7 @@ private val DarkColorScheme = darkColorScheme(
     onTertiary = Color.White,
     onBackground = TextPrimary,
     onSurface = TextPrimary,
-    surfaceVariant = DarkSurface,
+    surfaceVariant = DarkSurfaceVariant,
     onSurfaceVariant = TextSecondary
 )
 

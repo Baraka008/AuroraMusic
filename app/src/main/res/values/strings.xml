@@ -1,3 +1,46 @@
 <resources>
     <string name="app_name">Aurora Music</string>
+
+    <!-- Navigation -->
+    <string name="nav_library">Library</string>
+    <string name="nav_search">Search</string>
+    <string name="nav_dj">Aurora DJ</string>
+    <string name="nav_settings">Settings</string>
+
+    <!-- Library -->
+    <string name="tab_songs">Songs</string>
+    <string name="tab_artists">Artists</string>
+    <string name="tab_albums">Albums</string>
+    <string name="tab_genres">Genres</string>
+    <string name="tab_folders">Folders</string>
+    <string name="tab_playlists">Playlists</string>
+    <string name="tab_favorites">Favorites</string>
+    <string name="empty_library">Your library is empty</string>
+    <string name="scan_music">Scan for Music</string>
+
+    <!-- Player -->
+    <string name="now_playing">NOW PLAYING</string>
+    <string name="playing_on">Playing on: %1$s</string>
+    <string name="lyrics_fetching">Fetching lyrics...</string>
+    <string name="no_lyrics">No lyrics available</string>
+
+    <!-- Settings -->
+    <string name="settings_dj_title">Aurora DJ</string>
+    <string name="settings_voice_commentary">Voice Commentary</string>
+    <string name="settings_voice_commentary_desc">Enable AI DJ voice during song transitions</string>
+    <string name="settings_audio_eq">Audio Equalizer</string>
+    <string name="settings_bass_boost">Bass Boost</string>
+    <string name="settings_reverb">Reverb</string>
+    <string name="settings_virtualizer">Virtualizer</string>
+    <string name="settings_appearance">Appearance</string>
+    <string name="settings_amoled">AMOLED Black</string>
+    <string name="settings_amoled_desc">Use pure black for backgrounds</string>
+
+    <!-- Misc -->
+    <string name="share_app">Share Aurora Music</string>
+    <string name="rate_app">Rate on Play Store</string>
+    <string name="about_title">About</string>
+    <string name="version_label">Version %1$s</string>
+    <string name="legal_privacy">Privacy Policy</string>
+    <string name="legal_terms">Terms of Service</string>
 </resources>

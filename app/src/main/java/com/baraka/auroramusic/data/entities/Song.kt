@@ -19,6 +19,7 @@ data class Song(
     val duration: Long,
     val uri: String,
     val albumArtUri: String? = null,
+    val folderPath: String = "",
     val playCount: Int = 0,
     val skipCount: Int = 0,
     val isFavorite: Boolean = false,
@@ -26,5 +27,6 @@ data class Song(
     val dateAdded: Long = System.currentTimeMillis(),
     val rating: Int = 0,
     val userTags: String = "",
+    val embeddedLyrics: String? = null,
     val djExcluded: Boolean = false
 )

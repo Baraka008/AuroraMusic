@@ -18,6 +18,7 @@ class MusicScanner @Inject constructor(
     private val featureAnalyzer: MusicFeatureAnalyzer
 ) {
     suspend fun scanLocalLibrary(contentResolver: ContentResolver) = withContext(Dispatchers.IO) {
+        val existingUris = songDao.getAllUris().toSet()
         val uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
         val projection = arrayOf(
             MediaStore.Audio.Media._ID,
@@ -41,9 +42,10 @@ class MusicScanner @Inject constructor(
 
             while (cursor.moveToNext()) {
                 val songUri = cursor.getString(dataIdx)
+                val folderPath = songUri.substringBeforeLast("/", "")
                 
                 // Check if song already exists
-                if (songDao.getSongByUri(songUri) != null) continue
+                if (existingUris.contains(songUri)) continue
 
                 val albumId = cursor.getLong(albumIdIdx)
                 val artUri = ContentUris.withAppendedId(
@@ -57,6 +59,7 @@ class MusicScanner @Inject constructor(
                     album = cursor.getString(albumIdx),
                     duration = cursor.getLong(durationIdx),
                     uri = songUri,
+                    folderPath = folderPath,
                     albumArtUri = artUri,
                     year = if (yearIdx != -1) cursor.getInt(yearIdx) else null,
                     genre = "Unknown"

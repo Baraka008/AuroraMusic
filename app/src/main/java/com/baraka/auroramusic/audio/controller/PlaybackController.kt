@@ -12,11 +12,17 @@ interface PlaybackController {
     val currentBpm: StateFlow<Float>
     val currentEnergy: StateFlow<Float>
     
-    fun play(song: Song)
+    fun play(song: Song, context: List<Song> = emptyList())
     fun pause()
     fun resume()
     fun skip()
     fun previous()
+    fun seekTo(position: Long)
+    fun playNext(song: Song)
+    fun setPlaybackSpeed(speed: Float)
+    fun setPlaybackPitch(pitch: Float)
+    fun setSleepTimer(durationMinutes: Int)
+    fun toggleFavorite(song: Song)
     fun setQueue(songs: List<Song>)
     fun addToQueue(song: Song)
     fun clearQueue()

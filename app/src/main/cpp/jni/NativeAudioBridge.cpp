@@ -26,6 +26,59 @@ Java_com_baraka_auroramusic_audio_NativeAudioEngine_nativeShutdown(JNIEnv *env, 
     }
 }
 
+#include "dsp/EQEngine.h"
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_baraka_auroramusic_audio_NativeAudioEngine_nativeSetEQBand(JNIEnv *env, jobject thiz, jint band_idx, jfloat gain_db) {
+    if (engine != nullptr) {
+        engine->setEQBand(band_idx, gain_db);
+    }
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_baraka_auroramusic_audio_NativeAudioEngine_nativeSetEQPreset(JNIEnv *env, jobject thiz, jint preset_idx) {
+    if (engine != nullptr) {
+        engine->setEQPreset(preset_idx);
+    }
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_baraka_auroramusic_audio_NativeAudioEngine_nativeSetBassBoost(JNIEnv *env, jobject thiz, jfloat gain_db) {
+    if (engine != nullptr) {
+        engine->setBassBoost(gain_db);
+    }
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_baraka_auroramusic_audio_NativeAudioEngine_nativeSetReverbLevel(JNIEnv *env, jobject thiz, jfloat level) {
+    if (engine != nullptr) {
+        engine->setReverbLevel(level);
+    }
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_baraka_auroramusic_audio_NativeAudioEngine_nativeSetVirtualizerLevel(JNIEnv *env, jobject thiz, jfloat level) {
+    if (engine != nullptr) {
+        engine->setVirtualizerLevel(level);
+    }
+}
+
+extern "C"
+JNIEXPORT jfloatArray JNICALL
+Java_com_baraka_auroramusic_audio_NativeAudioEngine_nativeGetFFTData(JNIEnv *env, jobject thiz) {
+    if (engine == nullptr) return nullptr;
+
+    auto magnitudes = engine->getAnalyzer().getMagnitudes();
+    jfloatArray result = env->NewFloatArray(magnitudes.size());
+    env->SetFloatArrayRegion(result, 0, magnitudes.size(), magnitudes.data());
+    return result;
+}
+
 extern "C"
 JNIEXPORT jobject JNICALL
 Java_com_baraka_auroramusic_audio_NativeAudioEngine_nativeAnalyzeFeature(JNIEnv *env, jobject thiz, jstring uri) {
