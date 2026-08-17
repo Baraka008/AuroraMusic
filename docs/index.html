@@ -58,7 +58,7 @@
             align-items: center;
             text-align: center;
             padding: 40px 20px;
-            perspective: 1000px;
+            perspective: 1500px;
         }
 
         .hero-content {
@@ -129,14 +129,15 @@
             justify-content: center;
             align-items: center;
             position: relative;
-            box-shadow: 20px 20px 60px rgba(0,0,0,0.8);
-            transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            box-shadow: 30px 40px 80px rgba(0,0,0,0.9);
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
             transform: rotateY(-15deg) rotateX(10deg);
         }
 
         .phone-mockup:hover {
-            transform: rotateY(0deg) rotateX(0deg) scale(1.05);
+            transform: rotateY(0deg) rotateX(0deg) scale(1.05) translateZ(50px);
             z-index: 10;
+            box-shadow: 0px 0px 50px var(--accent-glow);
         }
 
         .phone-mockup span {
@@ -173,6 +174,13 @@
             transition: all 0.4s;
             position: relative;
             overflow: hidden;
+            opacity: 0; /* Handled by JS */
+            transform: translateY(30px);
+        }
+
+        .feature-card.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .feature-card:hover {
@@ -264,6 +272,7 @@
             <a href="https://github.com/victorbaraka/AuroraMusic/releases" class="download-btn">
                 <i class="fab fa-android"></i> Download APK
             </a>
+            <p style="margin-top: 15px; font-size: 0.9rem; color: #777;">Download from the "Releases" section on GitHub</p>
         </div>
 
         <div class="gallery">
@@ -315,17 +324,13 @@
     <section id="contact">
         <h2 style="text-align: center; margin-bottom: 40px;">Get in Touch</h2>
         <div class="contact-grid">
-            <a href="mailto:victorbaraka@example.com" class="contact-item">
+            <a href="mailto:vbaraka100@gmail.com" class="contact-item">
                 <i class="fas fa-envelope"></i>
-                <span>Email Support</span>
+                <span>vbaraka100@gmail.com</span>
             </a>
             <a href="https://github.com/victorbaraka" class="contact-item">
                 <i class="fab fa-github"></i>
                 <span>GitHub Profile</span>
-            </a>
-            <a href="https://twitter.com/victorbaraka" class="contact-item">
-                <i class="fab fa-twitter"></i>
-                <span>Follow Updates</span>
             </a>
         </div>
     </section>
@@ -366,26 +371,24 @@
             });
         });
 
-        // Simple scroll animation trigger
-        const observer = new IntersectionAnimationObserver();
-        function IntersectionAnimationObserver() {
+        // Fixed Animation Observer
+        function initAnimations() {
             const options = { threshold: 0.1 };
             const obs = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
-                        entry.target.style.opacity = '1';
-                        entry.target.style.transform = 'translateY(0)';
+                        entry.target.classList.add('visible');
                     }
                 });
             }, options);
 
             document.querySelectorAll('.feature-card, .section-title').forEach(el => {
-                el.style.opacity = '0';
-                el.style.transform = 'translateY(30px)';
                 el.style.transition = 'all 0.8s ease-out';
                 obs.observe(el);
             });
         }
+
+        window.addEventListener('load', initAnimations);
     </script>
 </body>
 </html>
