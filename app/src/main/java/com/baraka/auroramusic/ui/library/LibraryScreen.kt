@@ -221,7 +221,7 @@ fun SongItem(
         ) {
             AsyncImage(
                 model = song.albumArtUri,
-                contentDescription = null,
+                contentDescription = "Song Thumbnail",
                 modifier = Modifier
                     .size(56.dp)
                     .clip(MaterialTheme.shapes.medium),

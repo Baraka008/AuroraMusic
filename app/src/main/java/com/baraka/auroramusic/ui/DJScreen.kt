@@ -63,7 +63,7 @@ fun DJScreen(
                 }) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_send),
-                        contentDescription = "Send"
+                        contentDescription = "Send Command"
                     )
                 }
             }

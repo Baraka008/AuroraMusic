@@ -52,6 +52,7 @@ android {
     buildFeatures {
         compose = true
         prefab = true
+        buildConfig = true
     }
 
     externalNativeBuild {

@@ -3,166 +3,389 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aurora Music | High-Performance Audio Player</title>
+    <title>Aurora Music | Next-Gen Audio Experience</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
             --bg-color: #000000;
             --surface-color: #0A0A0A;
             --accent-color: #5C6BC0;
+            --accent-glow: rgba(92, 107, 192, 0.4);
             --text-primary: #FFFFFF;
             --text-secondary: #B0B0B0;
+            --glass: rgba(255, 255, 255, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
             background-color: var(--bg-color);
             color: var(--text-primary);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Moving Aurora Background */
+        .aurora-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at 20% 30%, #1A237E 0%, transparent 40%),
+                        radial-gradient(circle at 80% 70%, #006064 0%, transparent 40%);
+            filter: blur(80px);
+            opacity: 0.5;
+            animation: aurora-move 20s infinite alternate;
+        }
+
+        @keyframes aurora-move {
+            from { transform: scale(1) translate(0, 0); }
+            to { transform: scale(1.2) translate(5%, 5%); }
         }
 
         header {
-            width: 100%;
-            height: 100vh;
-            background: linear-gradient(180deg, #1A237E 0%, #000000 100%);
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
-            padding: 20px;
-            box-sizing: border-box;
+            padding: 40px 20px;
+            perspective: 1000px;
+        }
+
+        .hero-content {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fade-up 1s forwards 0.5s;
+        }
+
+        @keyframes fade-up {
+            to { opacity: 1; transform: translateY(0); }
         }
 
         h1 {
-            font-size: 4rem;
-            margin-bottom: 10px;
-            letter-spacing: -1px;
+            font-size: 5rem;
+            font-weight: 900;
+            background: linear-gradient(to bottom, #FFF 0%, #AAA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
         }
 
-        p.tagline {
+        .tagline {
             font-size: 1.5rem;
             color: var(--text-secondary);
-            max-width: 600px;
-            margin-bottom: 40px;
+            max-width: 700px;
+            margin-bottom: 50px;
         }
 
         .download-btn {
             background-color: var(--accent-color);
             color: white;
-            padding: 15px 40px;
-            border-radius: 30px;
+            padding: 18px 50px;
+            border-radius: 40px;
             text-decoration: none;
             font-weight: bold;
             font-size: 1.2rem;
-            transition: transform 0.2s, background-color 0.2s;
-            box-shadow: 0 4px 20px rgba(92, 107, 192, 0.4);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 30px var(--accent-glow);
+            display: inline-block;
         }
 
         .download-btn:hover {
-            transform: scale(1.05);
-            background-color: #7986CB;
+            transform: scale(1.1) translateY(-5px);
+            box-shadow: 0 15px 40px var(--accent-glow);
         }
 
+        /* 3D Phone Gallery */
+        .gallery {
+            display: flex;
+            gap: 40px;
+            margin-top: 80px;
+            transform-style: preserve-3d;
+            animation: gallery-entrance 1.5s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        @keyframes gallery-entrance {
+            from { transform: rotateX(20deg) translateZ(-500px); opacity: 0; }
+            to { transform: rotateX(0) translateZ(0); opacity: 1; }
+        }
+
+        .phone-mockup {
+            width: 260px;
+            height: 520px;
+            background-color: #111;
+            border-radius: 40px;
+            border: 8px solid #222;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            box-shadow: 20px 20px 60px rgba(0,0,0,0.8);
+            transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            transform: rotateY(-15deg) rotateX(10deg);
+        }
+
+        .phone-mockup:hover {
+            transform: rotateY(0deg) rotateX(0deg) scale(1.05);
+            z-index: 10;
+        }
+
+        .phone-mockup span {
+            font-weight: bold;
+            color: #333;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Features Section */
         section {
-            padding: 80px 20px;
-            max-width: 1000px;
-            width: 100%;
-            box-sizing: border-box;
+            padding: 120px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 3rem;
+            margin-bottom: 60px;
         }
 
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-top: 40px;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
         }
 
         .feature-card {
             background-color: var(--surface-color);
-            padding: 30px;
-            border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.05);
-            transition: border-color 0.3s;
+            padding: 40px;
+            border-radius: 30px;
+            border: 1px solid var(--glass);
+            transition: all 0.4s;
+            position: relative;
+            overflow: hidden;
         }
 
         .feature-card:hover {
+            transform: translateY(-10px);
             border-color: var(--accent-color);
+            background-color: #0F111A;
         }
 
-        .feature-card h3 {
+        .feature-card i {
+            font-size: 2.5rem;
             color: var(--accent-color);
-            margin-top: 0;
+            margin-bottom: 25px;
+        }
+
+        /* Rating Section */
+        .rating-section {
+            text-align: center;
+            background: linear-gradient(180deg, transparent, #080808);
+            border-radius: 40px;
+            margin: 0 20px;
+            padding: 80px 20px;
+        }
+
+        .stars {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .stars i {
+            font-size: 2.5rem;
+            cursor: pointer;
+            color: #333;
+            transition: color 0.2s, transform 0.2s;
+        }
+
+        .stars i:hover, .stars i.active {
+            color: #FFD600;
+            transform: scale(1.2);
+        }
+
+        /* Contact Section */
+        .contact-grid {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+            color: var(--text-primary);
+            padding: 15px 30px;
+            background: var(--glass);
+            border-radius: 20px;
+            transition: background 0.3s;
+        }
+
+        .contact-item:hover {
+            background: rgba(255,255,255,0.1);
         }
 
         footer {
-            padding: 40px;
+            padding: 60px;
+            text-align: center;
             color: var(--text-secondary);
-            font-size: 0.9rem;
+            border-top: 1px solid var(--glass);
         }
 
-        .screenshot-placeholder {
-            width: 250px;
-            height: 500px;
-            background-color: #121212;
-            border-radius: 20px;
-            border: 4px solid #222;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: #333;
-            font-weight: bold;
-            margin: 20px;
-        }
-
-        .gallery {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-top: 50px;
+        @media (max-width: 768px) {
+            h1 { font-size: 3rem; }
+            .gallery { flex-direction: column; align-items: center; }
+            .phone-mockup { transform: none !important; }
         }
     </style>
 </head>
 <body>
+    <div class="aurora-bg"></div>
+
     <header>
-        <h1>Aurora Music</h1>
-        <p class="tagline">Experience audio excellence with our native C++ engine and beautiful AMOLED-first design.</p>
-        <a href="https://github.com/victorbaraka/AuroraMusic/releases" class="download-btn">Download Latest APK</a>
+        <div class="hero-content">
+            <h1>Aurora Music</h1>
+            <p class="tagline">The most advanced, high-performance audio engine ever built for Android. Pure aesthetics. Pure sound.</p>
+            <a href="https://github.com/victorbaraka/AuroraMusic/releases" class="download-btn">
+                <i class="fab fa-android"></i> Download APK
+            </a>
+        </div>
 
         <div class="gallery">
-            <div class="screenshot-placeholder">Now Playing</div>
-            <div class="screenshot-placeholder">Library</div>
-            <div class="screenshot-placeholder">Aurora DJ</div>
+            <div class="phone-mockup"><span>Now Playing</span></div>
+            <div class="phone-mockup" style="transform: translateY(-40px) rotateY(0deg)"><span>Library</span></div>
+            <div class="phone-mockup" style="transform: rotateY(15deg) rotateX(10deg)"><span>Aurora DJ</span></div>
         </div>
     </header>
 
-    <section>
-        <h2 style="text-align: center; font-size: 2.5rem;">Professional Features</h2>
+    <section id="features">
+        <h2 class="section-title">Engineered for Sound</h2>
         <div class="features-grid">
             <div class="feature-card">
-                <h3>Native C++ Audio</h3>
-                <p>High-fidelity sound processing powered by Google Oboe and custom DSP nodes for zero-latency effects.</p>
+                <i class="fas fa-microchip"></i>
+                <h3>Native C++ Core</h3>
+                <p>Built on Google's Oboe library, our custom DSP engine provides sub-millisecond latency for real-time effects.</p>
             </div>
             <div class="feature-card">
-                <h3>Real-Time FFT Visualizer</h3>
-                <p>An accurate, beautiful spectrum visualizer that responds precisely to your music's frequencies.</p>
+                <i class="fas fa-wave-square"></i>
+                <h3>Elite Visualizer</h3>
+                <p>True FFT-based frequency analysis. Don't just hear the beat—see every single frequency in high-fidelity.</p>
             </div>
             <div class="feature-card">
-                <h3>Midnight Aurora Theme</h3>
-                <p>A sophisticated palette designed specifically for AMOLED screens, saving battery and looking premium.</p>
+                <i class="fas fa-sliders-h"></i>
+                <h3>Pro Audio Suite</h3>
+                <p>10-band precision EQ, immersive virtualizer, and professional reverb that brings the concert hall to your pocket.</p>
             </div>
             <div class="feature-card">
-                <h3>Smart Metadata</h3>
-                <p>Automatic timed lyrics fetching (LRC) and multi-faceted browsing by Artist, Album, and Folder.</p>
+                <i class="fas fa-moon"></i>
+                <h3>Pure AMOLED</h3>
+                <p>Designed for the dark. Our deep black interface saves up to 30% battery life while providing a stunning look.</p>
             </div>
         </div>
     </section>
 
+    <section class="rating-section">
+        <h2>Love the experience?</h2>
+        <p>Give us a quick rating based on your experience</p>
+        <div class="stars" id="ratingWidget">
+            <i class="fas fa-star" data-val="1"></i>
+            <i class="fas fa-star" data-val="2"></i>
+            <i class="fas fa-star" data-val="3"></i>
+            <i class="fas fa-star" data-val="4"></i>
+            <i class="fas fa-star" data-val="5"></i>
+        </div>
+        <p id="ratingFeedback" style="display: none; color: var(--accent-color); font-weight: bold;">Thank you for your feedback!</p>
+    </section>
+
+    <section id="contact">
+        <h2 style="text-align: center; margin-bottom: 40px;">Get in Touch</h2>
+        <div class="contact-grid">
+            <a href="mailto:victorbaraka@example.com" class="contact-item">
+                <i class="fas fa-envelope"></i>
+                <span>Email Support</span>
+            </a>
+            <a href="https://github.com/victorbaraka" class="contact-item">
+                <i class="fab fa-github"></i>
+                <span>GitHub Profile</span>
+            </a>
+            <a href="https://twitter.com/victorbaraka" class="contact-item">
+                <i class="fab fa-twitter"></i>
+                <span>Follow Updates</span>
+            </a>
+        </div>
+    </section>
+
     <footer>
-        &copy; 2026 Aurora Music Project. Created by Victor Baraka.
+        <p>&copy; 2026 Aurora Music Project. All rights reserved.</p>
+        <p style="margin-top: 10px; font-size: 0.8rem;">Developed with precision by Victor Baraka.</p>
     </footer>
+
+    <script>
+        // Interactive Star Rating
+        const stars = document.querySelectorAll('#ratingWidget i');
+        const feedback = document.getElementById('ratingFeedback');
+
+        stars.forEach(star => {
+            star.addEventListener('click', function() {
+                const val = this.getAttribute('data-val');
+                stars.forEach(s => {
+                    s.classList.remove('active');
+                    if(s.getAttribute('data-val') <= val) s.classList.add('active');
+                });
+                feedback.style.display = 'block';
+                feedback.style.opacity = '0';
+                setTimeout(() => feedback.style.opacity = '1', 50);
+            });
+
+            star.addEventListener('mouseover', function() {
+                const val = this.getAttribute('data-val');
+                stars.forEach(s => {
+                    if(s.getAttribute('data-val') <= val) s.style.color = '#FFD600';
+                });
+            });
+
+            star.addEventListener('mouseout', function() {
+                stars.forEach(s => {
+                    if(!s.classList.contains('active')) s.style.color = '#333';
+                });
+            });
+        });
+
+        // Simple scroll animation trigger
+        const observer = new IntersectionAnimationObserver();
+        function IntersectionAnimationObserver() {
+            const options = { threshold: 0.1 };
+            const obs = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, options);
+
+            document.querySelectorAll('.feature-card, .section-title').forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(30px)';
+                el.style.transition = 'all 0.8s ease-out';
+                obs.observe(el);
+            });
+        }
+    </script>
 </body>
 </html>

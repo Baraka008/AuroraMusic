@@ -102,6 +102,13 @@ class PlaybackControllerImpl @Inject constructor(
                 if (playbackState == Player.STATE_READY) {
                     _duration.value = player.duration.coerceAtLeast(0L)
                 }
+                
+                // Real Crossfade trigger logic (Experimental)
+                if (playbackState == Player.STATE_BUFFERING) {
+                    scope.launch { rampVolume(0f) }
+                } else if (playbackState == Player.STATE_READY) {
+                    scope.launch { rampVolume(1f) }
+                }
             }
         })
 

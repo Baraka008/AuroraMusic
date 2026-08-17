@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import com.baraka.auroramusic.R
 import com.baraka.auroramusic.ui.library.formatDuration
 import com.baraka.auroramusic.ui.theme.AmoledBlack
@@ -204,7 +205,7 @@ fun PortraitLayout(
                 ) {
                     AsyncImage(
                         model = song.albumArtUri,
-                        contentDescription = null,
+                        contentDescription = "Album Art",
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop,
                         error = painterResource(id = R.drawable.ic_aurora_note)
@@ -329,11 +330,15 @@ fun PlayerHeader(
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(onClick = onBack) {
-            Icon(imageVector = Icons.Default.KeyboardArrowDown, contentDescription = null, tint = Color.White)
+            Icon(
+                imageVector = Icons.Default.KeyboardArrowDown, 
+                contentDescription = "Collapse Player", 
+                tint = Color.White
+            )
         }
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
-                text = "NOW PLAYING",
+                text = stringResource(R.string.now_playing),
                 style = MaterialTheme.typography.labelLarge,
                 color = Color.White.copy(alpha = 0.7f)
             )
@@ -347,7 +352,11 @@ fun PlayerHeader(
         }
         Box {
             IconButton(onClick = { showMenu = true }) {
-                Icon(imageVector = Icons.Default.MoreVert, contentDescription = null, tint = Color.White)
+                Icon(
+                    imageVector = Icons.Default.MoreVert, 
+                    contentDescription = "More Options", 
+                    tint = Color.White
+                )
             }
             DropdownMenu(
                 expanded = showMenu,
@@ -466,16 +475,22 @@ fun PlaybackControls(isPlaying: Boolean, shuffleEnabled: Boolean, repeatMode: In
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(onClick = { viewModel.toggleShuffle() }) {
+            val shuffleEnabled by viewModel.shuffleEnabled.collectAsState()
             Icon(
                 imageVector = Icons.Default.Shuffle,
-                contentDescription = null,
+                contentDescription = if (shuffleEnabled) "Disable Shuffle" else "Enable Shuffle",
                 tint = if (shuffleEnabled) SlateBlue else Color.White.copy(alpha = 0.5f)
             )
         }
         
         Row(verticalAlignment = Alignment.CenterVertically) {
             IconButton(onClick = { viewModel.previous() }, modifier = Modifier.size(64.dp)) {
-                Icon(imageVector = Icons.Default.SkipPrevious, contentDescription = null, modifier = Modifier.size(36.dp), tint = Color.White)
+                Icon(
+                    imageVector = Icons.Default.SkipPrevious, 
+                    contentDescription = "Previous Track", 
+                    modifier = Modifier.size(36.dp), 
+                    tint = Color.White
+                )
             }
             
             Surface(
@@ -485,9 +500,10 @@ fun PlaybackControls(isPlaying: Boolean, shuffleEnabled: Boolean, repeatMode: In
                 color = Color.White
             ) {
                 Box(contentAlignment = Alignment.Center) {
+                    val isPlaying by viewModel.isPlaying.collectAsState()
                     Icon(
                         imageVector = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
-                        contentDescription = null,
+                        contentDescription = if (isPlaying) "Pause" else "Play",
                         modifier = Modifier.size(48.dp),
                         tint = AmoledBlack
                     )
@@ -495,14 +511,20 @@ fun PlaybackControls(isPlaying: Boolean, shuffleEnabled: Boolean, repeatMode: In
             }
 
             IconButton(onClick = { viewModel.skip() }, modifier = Modifier.size(64.dp)) {
-                Icon(imageVector = Icons.Default.SkipNext, contentDescription = null, modifier = Modifier.size(36.dp), tint = Color.White)
+                Icon(
+                    imageVector = Icons.Default.SkipNext, 
+                    contentDescription = "Skip Track", 
+                    modifier = Modifier.size(36.dp), 
+                    tint = Color.White
+                )
             }
         }
 
         IconButton(onClick = { viewModel.cycleRepeatMode() }) {
+            val repeatMode by viewModel.repeatMode.collectAsState()
             Icon(
                 imageVector = Icons.Default.Repeat,
-                contentDescription = null,
+                contentDescription = "Cycle Repeat Mode",
                 tint = if (repeatMode > 0) SlateBlue else Color.White.copy(alpha = 0.5f)
             )
         }
@@ -529,13 +551,13 @@ fun DeviceIndicator(device: DeviceInfo) {
     ) {
         Icon(
             imageVector = icon,
-            contentDescription = null,
+            contentDescription = "Device Type",
             tint = SlateBlue,
             modifier = Modifier.size(16.dp)
         )
         Spacer(modifier = Modifier.width(8.dp))
         Text(
-            text = "Playing on: ${device.name}",
+            text = stringResource(R.string.playing_on, device.name),
             style = MaterialTheme.typography.labelSmall,
             color = SlateBlue
         )

@@ -1,3 +1,5 @@
+package com.baraka.auroramusic.audio
+
 import android.content.Intent
 import com.baraka.auroramusic.audio.controller.PlaybackController
 import com.baraka.auroramusic.audio.controller.PlaybackControllerImpl

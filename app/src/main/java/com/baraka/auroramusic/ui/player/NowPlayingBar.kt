@@ -63,7 +63,7 @@ fun NowPlayingBar(
                 ) {
                     AsyncImage(
                         model = currentSong!!.albumArtUri,
-                        contentDescription = null,
+                        contentDescription = "Small Album Art",
                         modifier = Modifier
                             .size(40.dp)
                             .clip(RoundedCornerShape(6.dp)),
@@ -90,7 +90,7 @@ fun NowPlayingBar(
                     IconButton(onClick = { viewModel.togglePlayback() }) {
                         Icon(
                             imageVector = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
-                            contentDescription = null,
+                            contentDescription = if (isPlaying) "Pause" else "Play",
                             tint = Color.White
                         )
                     }

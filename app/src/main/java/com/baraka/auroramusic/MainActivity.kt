@@ -32,6 +32,7 @@ import com.baraka.auroramusic.ui.library.LibraryScreen
 import com.baraka.auroramusic.ui.search.SearchScreen
 import com.baraka.auroramusic.ui.settings.SettingsScreen
 import com.baraka.auroramusic.ui.settings.SettingsViewModel
+import com.baraka.auroramusic.ui.settings.AboutScreen
 import com.baraka.auroramusic.ui.player.NowPlayingBar
 import com.baraka.auroramusic.ui.player.NowPlayingScreen
 import com.baraka.auroramusic.ui.player.PlayerViewModel
@@ -41,6 +42,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -56,6 +58,7 @@ class MainActivity : ComponentActivity() {
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
         super.onCreate(savedInstanceState)
         nativeEngine.initialize()
         enableEdgeToEdge()
@@ -153,8 +156,12 @@ class MainActivity : ComponentActivity() {
                                 val settingsViewModel: SettingsViewModel = hiltViewModel()
                                 SettingsScreen(
                                     viewModel = settingsViewModel,
-                                    onBack = { navController.popBackStack() }
+                                    onBack = { navController.popBackStack() },
+                                    onNavigateToAbout = { navController.navigate(Screen.About.route) }
                                 )
+                            }
+                            composable(Screen.About.route) {
+                                AboutScreen(onBack = { navController.popBackStack() })
                             }
                         }
                     }
